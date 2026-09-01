@@ -35,11 +35,17 @@ def cycle_cell(cat1, cat2, i, j):
 
 
 def register_word():
-    category = st.session_state.category_select
-    val = st.session_state.word_input.strip()
-    if category and val and val not in st.session_state["items"][category]:
-        st.session_state["items"][category].append(val)
-    st.session_state.word_input = ""
+    category = st.session_state.get("category_select")
+    val = st.session_state.get("word_input", "").strip()
+    items = st.session_state.setdefault("items", {})
+
+    if category not in items:
+        items[category] = []
+
+    if category and val and val not in items[category]:
+        items[category].append(val)
+
+    st.session_state["word_input"] = ""
 
 
 def remove_word(category, word):
