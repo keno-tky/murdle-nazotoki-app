@@ -92,12 +92,58 @@ st.markdown(
         font-weight: 700;
         padding: 6px 0;
         border: 1px solid #999;
+        min-height: 52px;
+        height: 52px;
+        width: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        font-size: 0.95rem;
+        line-height: 1.2;
     }
     .row-header {
         background-color: #dfe6f7;
         font-weight: 700;
         padding: 6px 4px;
         border: 1px solid #999;
+        min-height: 52px;
+        height: 52px;
+        width: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        font-size: 0.95rem;
+        line-height: 1.2;
+    }
+    .matrix-row {
+        margin-bottom: 1px;
+    }
+    div[data-testid="stHorizontalBlock"] > div {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+    div[data-testid="stButton"] {
+        min-width: 52px;
+        width: 100%;
+        height: 52px;
+    }
+    div[data-testid="stButton"] > button {
+        width: 100%;
+        height: 52px;
+        min-width: 52px;
+        padding: 0 4px;
+        font-size: clamp(0.7rem, 1vw, 1rem);
+        line-height: 1.2;
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     </style>
     """,
@@ -112,22 +158,22 @@ with st.sidebar:
 
     st.selectbox("選択してください...", CATEGORIES, key="category_select")
 
-    # --- 音声入力（streamlit-mic-recorder が入っていれば利用） ---
-    try:
-        from streamlit_mic_recorder import speech_to_text
+    # # --- 音声入力（streamlit-mic-recorder が入っていれば利用） ---
+    # try:
+    #     from streamlit_mic_recorder import speech_to_text
 
-        voice_text = speech_to_text(
-            language="ja",
-            start_prompt="🎤 話す",
-            stop_prompt="⏹ 停止",
-            just_once=True,
-            use_container_width=True,
-            key="mic",
-        )
-        if voice_text:
-            st.session_state.word_input = voice_text
-    except ImportError:
-        st.caption("※音声入力を使うには `pip install streamlit-mic-recorder` が必要です")
+    #     voice_text = speech_to_text(
+    #         language="ja",
+    #         start_prompt="🎤 話す",
+    #         stop_prompt="⏹ 停止",
+    #         just_once=True,
+    #         use_container_width=True,
+    #         key="mic",
+    #     )
+    #     if voice_text:
+    #         st.session_state.word_input = voice_text
+    # except ImportError:
+    #     st.caption("※音声入力を使うには `pip install streamlit-mic-recorder` が必要です")
 
     col_in, col_btn = st.columns([3, 1])
     with col_in:
@@ -187,6 +233,7 @@ def render_matrix(cat1, cat2, container):
             header_cols[j + 1].markdown(f"<div class='cell-header'>{it2}</div>", unsafe_allow_html=True)
 
         for i, it1 in enumerate(items1):
+            st.markdown("<div class='matrix-row'>", unsafe_allow_html=True)
             row_cols = st.columns(n_cols)
             row_cols[0].markdown(f"<div class='row-header'>{it1}</div>", unsafe_allow_html=True)
             for j, it2 in enumerate(items2):
@@ -195,6 +242,7 @@ def render_matrix(cat1, cat2, container):
                 if row_cols[j + 1].button(label, key=f"{cat1}_{cat2}_{i}_{j}"):
                     cycle_cell(cat1, cat2, i, j)
                     st.rerun()
+            st.markdown("</div>", unsafe_allow_html=True)
 
         st.write("")
     return True
